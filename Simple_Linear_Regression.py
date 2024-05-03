@@ -7,6 +7,9 @@ from sklearn import linear_model
 from sklearn.metrics import r2_score
 from math import floor
 from sklearn.metrics import mean_squared_error
+from mpl_toolkits.mplot3d import Axes3D
+from sklearn.model_selection import train_test_split
+
 
 
 df = pd.read_csv('Data/FuelConsumption.csv')
@@ -191,4 +194,125 @@ print(f'r2 Skoru = %.2f' % r2_score(dogruluk_payi,test_y))  # r2_score fonksiyon
 # region FUELCONSUMPTION_COMB_MPG sütunun sil
 df.drop('FUELCONSUMPTION_COMB_MPG', inplace=True, axis=1)
 print(df.head().to_string())
+# endregion
+
+
+
+# region ENGINESIZE, CYLINDERS ve FUELCONSUMPTION_CITY dayanarak CO2EMISSIONS arasındaki ilişkiyi bul (Çoklu Lineer Regresyon) ?????? S O R (Scatter gösterimi olmuyor dizi boyutu farklı sanırsam) ?????
+print(df.head().to_string())
+ecf_df = df[['ENGINESIZE', 'CYLINDERS', 'FUELCONSUMPTION_CITY', 'CO2EMISSIONS']]
+print(ecf_df.head().to_string())
+
+mask = np.random.rand(len(df)) <= 0.8
+print(mask)
+
+
+train_df = ecf_df[mask]
+test_df = ecf_df[~mask]
+
+print(train_df.shape)
+print(test_df.shape)
+
+regression = linear_model.LinearRegression()
+
+train_x = np.asarray(train_df[['ENGINESIZE', 'CYLINDERS', 'FUELCONSUMPTION_CITY']])
+train_y = np.asarray(train_df[['CO2EMISSIONS']])
+
+regression.fit(train_x, train_y)
+
+regression_coef = float('%.2f' % regression.coef_[0][0])
+regression_intercept = float('%.2f' % regression.intercept_[0])
+
+print(regression_coef)
+print(regression_intercept)
+
+motor_hacmi = float(input('Motor hacmini giriniz: '))
+silindir_sayisi = int(input('Silinidir sayısını giriniz: '))
+sehirici_yakit_tuketimi = float(input('Şehir içi yakıt tüketimini giriniz: '))
+y = (regression_coef * motor_hacmi) + (regression_coef * silindir_sayisi) + (regression_coef * sehirici_yakit_tuketimi) + regression_intercept  # CO2EMISSIONS'u bulduk
+print(f'CO2 Emisyonu: {floor(y)}')
+
+
+# 3 boyutlu göstermek zorundayız ?????
+fig = plt.figure(figsize=(10, 7))
+ax = fig.add_subplot(111, projection='3d')
+
+ax.scatter(train_df['ENGINESIZE'], train_df['CYLINDERS'], train_df['FUELCONSUMPTION_CITY'], c=train_df['CO2EMISSIONS'], cmap='viridis', s=50)
+
+ax.set_xlabel('ENGINESIZE')
+ax.set_ylabel('CYLINDERS')
+ax.set_zlabel('FUELCONSUMPTION_CITY')
+ax.set_title('ENGINESIZE, CYLINDERS, FUELCONSUMPTION_CITY vs CO2EMISSIONS')
+
+plt.show()
+
+
+# test edelim
+test_x = np.asarray(test_df[['ENGINESIZE', 'CYLINDERS', 'FUELCONSUMPTION_CITY']])
+test_y = np.asarray(test_df[['CO2EMISSIONS']])
+test_prediction = regression.predict(test_x)
+print(test_prediction)
+r2_score_sonucu = '%.2f' % r2_score(test_prediction, test_y)
+print(r2_score_sonucu)
+# endregion
+
+
+
+# region ENGINESIZE ile CO2EMISSIONS arasındaki ilişkiyi bul ancak farklı yoldan çöz
+edf = df[['ENGINESIZE', 'CO2EMISSIONS']]
+print(edf.head().to_string())
+
+x = np.array(edf[['ENGINESIZE']])
+y = np.array(edf[['CO2EMISSIONS']])
+
+x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=2)
+
+regression = linear_model.LinearRegression()
+regression.fit(x_train, y_train)
+
+regression.score(x_test, y_test)  # test ve train arasında under fitting var (düşük uydurma)
+regression.score(x_train, y_train)
+
+print(f'Katsayılar: \n', regression.coef_)
+print(f'Sabit Katsayı: \n', regression.intercept_)
+
+motor_genisligi = np.array([[float(input('Motor hacmi: '))]])
+tahmin = regression.predict(motor_genisligi)
+print(tahmin)
+# endregion
+
+
+
+# region MODELYEAR, MAKE, ENGINESIZE bağımsız değişkenleri ile CO2EMISSIONS bağımlı değişkeni arasındaki ilişkiyi bul    ??????? get_dummies ile olmuyor onehotencoder nedir S O R ???????
+X = df[['MODELYEAR', 'MAKE', 'ENGINESIZE']]
+y = df['CO2EMISSIONS']
+
+X = pd.get_dummies(X, columns=['MAKE'], drop_first=True)  # Kategorik özellikleri dönüştür (dummy değişkenlere çevir) ve her satırda kıyasalama yaapr. Örneğin aracın markası Toyota ise, MAKE_Toyota sütunu 1 olacak ve diğer sütunlar 0 olacaktır. # drop_first=True ifadesi ilk kategori sütununu bırakarak sürekli 1 yazılmasını engellemiş olur.
+print(X.head().to_string())
+
+# Veri setini train ve test setlerine ayır
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Modeli oluştur ve eğit
+regression = linear_model.LinearRegression()
+regression.fit(X_train, y_train)
+
+# Modelin katsayılarını yazdır
+print("Katsayılar:", regression.coef_)
+print("Kesim Noktası:", regression.intercept_)
+
+# Modelin performansını değerlendir (r2_score)
+y_pred_train = regression.predict(X_train)
+y_pred_test = regression.predict(X_test)
+print("Eğitim Seti R2 Skoru:", r2_score(y_train, y_pred_train))
+print("Test Seti R2 Skoru:", r2_score(y_test, y_pred_test))
+
+# Tahminlerle gerçek değerler arasındaki farkı görselleştir
+plt.figure(figsize=(10,7))
+plt.plot(X_train, regression.coef_ * X_train + regression.intercept_)
+plt.scatter(y_test, y_pred_test, alpha=0.50, color='b')
+plt.xlabel("Gerçek CO2 Emisyonu", color='r')
+plt.ylabel("Tahmin Edilen CO2 Emisyonu", color='r')
+plt.suptitle("Gerçek ve Tahmin Edilen CO2 Emisyonu Arasındaki İlişki", color='r')
+plt.show()
 # endregion
