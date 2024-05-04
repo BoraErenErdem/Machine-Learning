@@ -16,7 +16,7 @@ df = pd.read_csv('Data/FuelConsumption.csv')
 print(df.head().to_string())
 
 
-# NOT: MSE modelin tahminlerinin doğruluğunu ölçerken, R-kare skoru bağımsız değişkenlerin bağımlı değişkendeki varyansı ne kadar açıkladığını ölçer.
+# NOT: mean_squared_error modelin tahminlerinin doğruluğunu ölçerken, r2_score bağımsız değişkenlerin bağımlı değişkendeki varyansı ne kadar açıkladığını ölçer.
 
 
 # region ENGINESIZE ile CO2EMISSIONS arasındaki ilişkiyi bul
