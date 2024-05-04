@@ -82,7 +82,6 @@ print(f'r2 score: %.2f' % r2_score(test_tahmini, test_y))  # r2_score() doğrulu
 
 
 
-
 # region Bu sefer de CYLINDERS ve CO2EMISSIONS arasındaki ilişkiyi lineer regresyonla bulalım
 
 cdf = df[['CYLINDERS', 'CO2EMISSIONS']]  # bağımsız CYLINDERS bağımlı CO2EMISSIONS
@@ -134,8 +133,6 @@ dogruluk_tahmini = regresyon.predict(test_x)
 print(dogruluk_tahmini)
 print(f'r2_score: %.2f' % r2_score(dogruluk_tahmini,test_y))
 # endregion
-
-
 
 
 
@@ -283,7 +280,7 @@ print(tahmin)
 
 
 
-# region MODELYEAR, MAKE, ENGINESIZE bağımsız değişkenleri ile CO2EMISSIONS bağımlı değişkeni arasındaki ilişkiyi bul    ??????? get_dummies ile olmuyor onehotencoder nedir S O R ???????
+# region MODELYEAR, MAKE, ENGINESIZE bağımsız değişkenleri ile CO2EMISSIONS bağımlı değişkeni arasındaki ilişkiyi bul
 X = df[['MODELYEAR', 'MAKE', 'ENGINESIZE']]
 y = df['CO2EMISSIONS']
 
