@@ -139,7 +139,7 @@ print(f'r2_score: %.2f' % r2_score(dogruluk_tahmini,test_y))
 
 
 
-# region FUELCONSUMPTION_COMB ile CO2 arasındaki ilişkiyi yap.  ????? S O R ????
+# region FUELCONSUMPTION_COMB ile CO2 arasındaki ilişkiyi yap.
 
 fdf = df[['FUELCONSUMPTION_COMB', 'CO2EMISSIONS']]
 print(fdf.head().to_string())
@@ -186,7 +186,7 @@ test_x = np.asarray(test_df[['FUELCONSUMPTION_COMB']])
 test_y = np.asarray(test_df[['CO2EMISSIONS']])
 dogruluk_payi = regression.predict(test_x)
 print(dogruluk_payi)
-print(f'r2 Skoru = %.2f' % r2_score(dogruluk_payi,test_y))  # r2_score fonksiyonunda, ilk argüman gerçek değerler ve ikinci argüman tahmin edilen değerler olmalıdır. Bu nedenle, doğruluk payını hesaplarken bu sırayı dikkate alarak değişiklik yapıldı. neden böyle yapıldı (test_y, dogruluk_payi)
+print(f'r2 Skoru = %.2f' % r2_score(dogruluk_payi,test_y))  # r2_score fonksiyonunda, ilk argüman gerçek değerler ve ikinci argüman tahmin edilen değerler olmalıdır. Bu nedenle, doğruluk payını hesaplarken bu sırayı dikkate alarak değişiklik yapıldı.
 # endregion
 
 
@@ -198,7 +198,7 @@ print(df.head().to_string())
 
 
 
-# region ENGINESIZE, CYLINDERS ve FUELCONSUMPTION_CITY dayanarak CO2EMISSIONS arasındaki ilişkiyi bul (Çoklu Lineer Regresyon) ?????? S O R (Scatter gösterimi olmuyor dizi boyutu farklı sanırsam) ?????
+# region ENGINESIZE, CYLINDERS ve FUELCONSUMPTION_CITY dayanarak CO2EMISSIONS arasındaki ilişkiyi bul (Çoklu Lineer Regresyon)
 print(df.head().to_string())
 ecf_df = df[['ENGINESIZE', 'CYLINDERS', 'FUELCONSUMPTION_CITY', 'CO2EMISSIONS']]
 print(ecf_df.head().to_string())
@@ -233,7 +233,7 @@ y = (regression_coef * motor_hacmi) + (regression_coef * silindir_sayisi) + (reg
 print(f'CO2 Emisyonu: {floor(y)}')
 
 
-# 3 boyutlu göstermek zorundayız ?????
+# 3 boyutlu göstermek zorundayız
 fig = plt.figure(figsize=(10, 7))
 ax = fig.add_subplot(111, projection='3d')
 
@@ -287,7 +287,7 @@ print(tahmin)
 X = df[['MODELYEAR', 'MAKE', 'ENGINESIZE']]
 y = df['CO2EMISSIONS']
 
-X = pd.get_dummies(X, columns=['MAKE'], drop_first=True)  # Kategorik özellikleri dönüştür (dummy değişkenlere çevir) ve her satırda kıyasalama yaapr. Örneğin aracın markası Toyota ise, MAKE_Toyota sütunu 1 olacak ve diğer sütunlar 0 olacaktır. # drop_first=True ifadesi ilk kategori sütununu bırakarak sürekli 1 yazılmasını engellemiş olur.
+X = pd.get_dummies(X, columns=['MAKE'], drop_first=True)  # onehotencoding yap
 print(X.head().to_string())
 
 # Veri setini train ve test setlerine ayır
