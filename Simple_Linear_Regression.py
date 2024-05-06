@@ -163,7 +163,7 @@ reg_intercept = float('%.2f' % regression.intercept_[0])
 print(reg_coef)
 print(reg_intercept)
 
-ortalama_yakit_tuketimi = float(input("Ortalama YakıtTüketimini Giriniz: "))
+ortalama_yakit_tuketimi = float(input("Ortalama Yakıt Tüketimini Giriniz: "))
 y = reg_coef * ortalama_yakit_tuketimi + reg_intercept
 print(floor(y))
 
@@ -217,7 +217,7 @@ train_y = np.asarray(train_df[['CO2EMISSIONS']])
 
 regression.fit(train_x, train_y)
 
-regression_coef = float('%.2f' % regression.coef_[0][0])
+regression_coef = float('%.2f' % regression.coef_)
 regression_intercept = float('%.2f' % regression.intercept_[0])
 
 print(regression_coef)
@@ -232,10 +232,12 @@ print(f'CO2 Emisyonu: {floor(y)}')
 
 # 3 boyutlu göstermek zorundayız
 fig = plt.figure(figsize=(10, 7))
-ax = fig.add_subplot(111, projection='3d')
+ax = fig.add_subplot(111, projection='3d')  # 111 ifadesi ekranı satır sütun sayısına ne kadar bölmek istediğini sorar.  # projection='3d' ise 3d grafik için yapılır
 
-ax.scatter(train_df['ENGINESIZE'], train_df['CYLINDERS'], train_df['FUELCONSUMPTION_CITY'], c=train_df['CO2EMISSIONS'], cmap='viridis', s=50)
-
+ax.scatter(train_df['ENGINESIZE'], train_df['CYLINDERS'], train_df['FUELCONSUMPTION_CITY'], c=train_df['CO2EMISSIONS'], cmap='viridis', s=50)  # s=50 noktaların boyutunu belirler
+# c=train_df['CO2EMISSIONS'] ifadesi noktaların renklendirmesini belirler. Bu renklendirme CO2EMISSIONS sütununun değerine göre yapılır
+# ENGINESIZE = x, CYLINDERS = y, FUELCONSUMPTION_CITY = z eksenlerine karşılık gelir.
+# cmap='viridis', renk haritasını (color map) belirler. Bu durumda, 'viridis' renk haritası kullanılır. Bu renk haritası sıklıkla kullanılır çok kullanışlıdır.
 ax.set_xlabel('ENGINESIZE')
 ax.set_ylabel('CYLINDERS')
 ax.set_zlabel('FUELCONSUMPTION_CITY')
@@ -306,10 +308,175 @@ print("Test Seti R2 Skoru:", r2_score(y_test, y_pred_test))
 
 # Tahminlerle gerçek değerler arasındaki farkı görselleştir
 plt.figure(figsize=(10,7))
-plt.plot(X_train, regression.coef_ * X_train + regression.intercept_)
+plt.plot(X_train, regression.coef_ * X_train + regression.intercept_, color='r')
 plt.scatter(y_test, y_pred_test, alpha=0.50, color='b')
 plt.xlabel("Gerçek CO2 Emisyonu", color='r')
 plt.ylabel("Tahmin Edilen CO2 Emisyonu", color='r')
 plt.suptitle("Gerçek ve Tahmin Edilen CO2 Emisyonu Arasındaki İlişki", color='r')
+plt.show()
+# endregion
+
+
+
+# region ENGINESIZE,CYLINDERS,FUELCONSUMPTION_CITY,FUELCONSUMPTION_HWY kullanarak CO2EMISSIONS tahmin et.
+kdf = df[['ENGINESIZE', 'CYLINDERS', 'FUELCONSUMPTION_CITY', 'FUELCONSUMPTION_HWY', 'CO2EMISSIONS']]
+print(kdf.head().to_string())
+
+mask = np.random.rand(len(df)) <= 0.8
+print(mask)
+
+train_df = kdf[mask]
+test_df = kdf[~mask]
+
+print(train_df.shape)
+print(test_df.shape)
+
+regression = linear_model.LinearRegression()
+
+train_x = np.asarray(train_df[['ENGINESIZE', 'CYLINDERS', 'FUELCONSUMPTION_CITY', 'FUELCONSUMPTION_HWY']])
+train_y = np.asarray(train_df[['CO2EMISSIONS']])
+
+regression = regression.fit(train_x, train_y)
+
+reg_coef = float('%.2f' % regression.coef_[0][0])
+reg_intercept = float('%.2f' % regression.intercept_[0])
+
+print(reg_coef)
+print(reg_intercept)
+
+enginesize = float(input("Engine size: "))
+silindir = int(input("Cylinders: "))
+sehirici_yakit = float(input('Fuel consuption city: '))
+uzunyol_yakit = float(input('Fuel consuption highway: '))
+co2 = (reg_coef * enginesize) + (reg_coef * silindir) + (reg_coef * sehirici_yakit) + (reg_coef * uzunyol_yakit) + reg_intercept
+print(co2)
+
+
+# Görselleştirme
+# Her bir özellikle CO2 emisyonları arasındaki ilişkiyi gösteren scatter plot'lar oluştur
+plt.figure(figsize=(15, 10))
+
+plt.subplot(2, 2, 1)  # İlk sayı (2) alt çizim alanlarının satır sayısını belirtir. Bu durumda 2 satır olduğunu belirtir.
+# İkinci sayı (2) alt çizim alanlarının sütun sayısını belirtir. Bu durumda 2 sütun olduğunu belirtir.
+# Üçüncü sayı (1) mevcut alt çizim alanının konumunu belirtir. Burada 1 değeri bu alt çizim alanının ilk (sol üst) konumda olduğunu gösterir.
+plt.scatter(train_df['ENGINESIZE'], train_df['CO2EMISSIONS'], color='blue')
+plt.xlabel('Engine Size')
+plt.ylabel('CO2 Emissions')
+plt.title('Engine Size vs CO2 Emissions')
+
+plt.subplot(2, 2, 2)
+plt.scatter(train_df['CYLINDERS'], train_df['CO2EMISSIONS'], color='green')
+plt.xlabel('Cylinders')
+plt.ylabel('CO2 Emissions')
+plt.title('Cylinders vs CO2 Emissions')
+
+plt.subplot(2, 2, 3)
+plt.scatter(train_df['FUELCONSUMPTION_CITY'], train_df['CO2EMISSIONS'], color='red')
+plt.xlabel('Fuel Consumption City')
+plt.ylabel('CO2 Emissions')
+plt.title('Fuel Consumption City vs CO2 Emissions')
+
+plt.subplot(2, 2, 4)
+plt.scatter(train_df['FUELCONSUMPTION_HWY'], train_df['CO2EMISSIONS'], color='orange')
+plt.xlabel('Fuel Consumption Highway')
+plt.ylabel('CO2 Emissions')
+plt.title('Fuel Consumption Highway vs CO2 Emissions')
+
+plt.tight_layout()
+plt.show()
+
+
+
+
+# Test kısmı
+test_x = np.asarray(test_df[['ENGINESIZE', 'CYLINDERS', 'FUELCONSUMPTION_CITY', 'FUELCONSUMPTION_HWY']])
+test_y = np.asarray(test_df[['CO2EMISSIONS']])
+test_predict = regression.predict(test_x)
+print(test_predict)
+print(f'r2_score = %.2f' % r2_score(test_predict, test_y))
+# endregion
+
+
+
+# region FUELCONSUMPTION_COMB ve CO2EMISSIONS arasıdna tahmin yap
+fdf = df[['FUELCONSUMPTION_COMB', 'CO2EMISSIONS']]
+print(fdf.head().to_string())
+
+maske = np.random.rand(len(df)) <= 0.8
+print(maske)
+
+train_df = fdf[maske]
+test_df = fdf[~maske]
+
+print(train_df.shape)
+print(test_df.shape)
+
+regression = linear_model.LinearRegression()
+
+train_x = np.asarray(train_df[['FUELCONSUMPTION_COMB']])
+train_y = np.asarray(train_df[['CO2EMISSIONS']])
+
+regression.fit(train_x, train_y)
+
+regression_c = float('%.2f' % regression.coef_[0][0])
+regression_i = float('%.2f' % regression.intercept_[0])
+
+print(regression_c)
+print(regression_i)
+
+toplam_yakit_tuketimi = float(input("Toplam yakıt tüketimini giriniz: "))
+y = regression_c * toplam_yakit_tuketimi + regression_i
+print(f'Co2 emisyonu: {y}')
+
+
+plt.figure(figsize=(10,7))
+plt.scatter(train_df['FUELCONSUMPTION_COMB'], train_df['CO2EMISSIONS'], alpha=0.50, color='green')
+plt.plot(train_x, regression_c * train_x + regression_i, color='blue')
+plt.suptitle('FUELCONSUMPTION_COMB & CO2EMISSIONS Effect', color='r')
+plt.ylabel('CO2EMISSIONS', color='r')
+plt.xlabel('FUELCONSUMPTION_COMB', color='r')
+plt.legend(['FUELCONSUMPTION_COMB', 'CO2EMISSIONS'], prop={'size': 10})
+plt.grid()
+plt.show()
+
+
+test_x = np.asarray(test_df[['FUELCONSUMPTION_COMB']])
+test_y = np.asarray(test_df[['CO2EMISSIONS']])
+x_predict = regression.predict(test_x)
+print(x_predict)
+print(f'r2 score sonucu: %.2f' % r2_score(x_predict, test_y))
+# endregion
+
+
+
+# region ENGINESIZE ve CO2EMISSIONS arasında kısa yoldan tahmini bul.
+# Veri setinden ENGINESIZE ve CO2EMISSIONS sütunlarını seç
+X = df[['ENGINESIZE']]
+y = df[['CO2EMISSIONS']]
+
+# Veriyi train ve test setlerine ayır
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Linear regression modelini eğit
+regression = linear_model.LinearRegression()
+regression.fit(X_train, y_train)
+
+# Modeli kullanarak tahmin yap
+y_pred = regression.predict(X_test)
+
+# Modelin performansını değerlendir
+mse = mean_squared_error(y_test, y_pred)
+r2 = r2_score(y_test, y_pred)
+
+print("Mean Squared Error:", mse)
+print("R-squared:", r2)
+
+# Görselleştirme
+plt.figure(figsize=(10,7))
+plt.scatter(X_test, y_test, color='blue')
+plt.plot(X_test, y_pred, color='red')
+plt.xlabel('ENGINESIZE', color='r')
+plt.ylabel('CO2EMISSIONS', color='r')
+plt.suptitle('ENGINESIZE vs CO2EMISSIONS (Linear Regression)', color='r')
 plt.show()
 # endregion
