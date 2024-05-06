@@ -228,6 +228,64 @@ print(f'En iyi doğruluk değeri: {jsi_acc.max()}\n'
 
 
 
+# region Veri setindeki müşterilerin bütün özellik ve etkili parametrelere dayanarak, bir müşterinin hangi hizmet türüne ne kadar oranla abone olacağını tahmin et
+print(df.columns)
+
+X = df[['region', 'tenure', 'age', 'marital', 'address', 'income', 'ed',
+        'employ', 'retire', 'gender', 'reside']].values
+
+print(X)
+
+y = df['custcat'].values
+print(y)
+
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=42, test_size=0.2)
+
+print(X_train.shape)
+print(X_test.shape)
+print(y_train.shape)
+print(y_test.shape)
+
+X = preprocessing.StandardScaler().fit_transform(X)
+print(X)
+
+
+
+
+komsu_katsayisi = int(input('Katsayı giriniz: '))
+array_lenght = komsu_katsayisi - 1
+jacard_similarity_index = np.zeros(array_lenght)
+standart_sapma = np.zeros(array_lenght)
+
+for k in range(1, komsu_katsayisi):
+    sinif = KNeighborsClassifier(n_neighbors=k).fit(X_train, y_train)
+    y_prediction = sinif.predict(X_test)
+
+    jacard_similarity_index[k - 1] = metrics.accuracy_score(y_test, y_prediction)
+    standart_sapma[k - 1] = np.std(y_prediction == y_test) / np.sqrt(y_prediction.shape[0])
+
+
+print(f'jacard similartity index: {jacard_similarity_index}')
+print(f'Standart Sapma: {standart_sapma}')
+
+
+plt.figure(figsize=(10,7))
+plt.plot(range(1, komsu_katsayisi), jacard_similarity_index, color='green')
+plt.fill_between(range(1, komsu_katsayisi), jacard_similarity_index + 1 * standart_sapma, alpha=0.25, color='brown')
+plt.legend(('accuracy', 'std'), prop={'size': 8})
+plt.xlabel('Number of Neighboors', color='r')
+plt.ylabel('Accuracy', color='r')
+plt.grid()
+plt.tight_layout()
+plt.show()
+
+print(f'En iyi doğruluk oranın skoru: {jacard_similarity_index.max()}\n'
+        f' En iyi doğruluk oranının sırası: {jacard_similarity_index.argmax() + 1}')
+# endregion
+
+
+
 # region kişinin hangi müşteri kategorisine (custcat) ait olduğunu tahmin et.
 df.columns
 
@@ -405,7 +463,7 @@ features = ['region', 'tenure', 'age', 'marital', 'address', 'income', 'ed', 'em
 target = 'custcat'
 
 plt.figure(figsize=(18, 10))
-for i, feature in enumerate(features, 1):
+for i, feature in enumerate(features, 1):  # enumerate(features, 1) kullanılarak, her özellik için bir sayaç oluşturulur ve bu sayaç i değişkenine atanır, özellik de feature değişkenine atanır.
     plt.subplot(3, 4, i)
     sns.histplot(data=df, x=feature, hue=target, multiple="stack")
     plt.title(f'{feature} Dağılımı')

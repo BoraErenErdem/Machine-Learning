@@ -398,7 +398,7 @@ print(f'r2_score = %.2f' % r2_score(test_predict, test_y))
 
 
 
-# region FUELCONSUMPTION_COMB ve CO2EMISSIONS arasıdna tahmin yap
+# region FUELCONSUMPTION_COMB ve CO2EMISSIONS arasında tahmin yap
 fdf = df[['FUELCONSUMPTION_COMB', 'CO2EMISSIONS']]
 print(fdf.head().to_string())
 
