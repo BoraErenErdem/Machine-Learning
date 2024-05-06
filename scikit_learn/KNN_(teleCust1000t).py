@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 from sklearn import preprocessing,metrics
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.model_selection import train_test_split
+import seaborn as sns
 
 
 
@@ -285,5 +286,138 @@ print(f'En iyi doğruluk değeri: {jsi_acc.max()}\n'
 
 
 
-# region
+# region Kullanıcıların hangi custcat'i seçmeye daha yatkın olduğunun tahminini yap
+df.columns
+
+X = df[['region', 'tenure', 'age', 'marital', 'address', 'income', 'ed',
+        'employ', 'retire', 'gender', 'reside']].values
+print(X)
+
+y = df['custcat'].values
+print(y)
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=42, test_size=0.2)
+
+X = preprocessing.StandardScaler().fit_transform(X)  # Normalizasyon işlemi yaptık
+print(X)
+
+
+neighboor = KNeighborsClassifier(n_neighbors=10).fit(X_train, y_train)
+y_sonucu = neighboor.predict(X_test)
+print(y_sonucu)
+
+print(f'test set: {metrics.accuracy_score(y_test, neighboor.predict(X_test))}')
+print(f'train set: {metrics.accuracy_score(y_train, neighboor.predict(X_train))}')
+
+
+k_katsayisi = int(input("K katsayısını giriniz: "))
+array_uzunlugu = k_katsayisi - 1
+jsi_acc = np.zeros(array_uzunlugu)
+std_acc = np.zeros(array_uzunlugu)
+
+for k in range(1, k_katsayisi):
+    neigh = KNeighborsClassifier(n_neighbors=k).fit(X_train, y_train)
+    predictions = neigh.predict(X_test)
+
+    jsi_acc[k - 1] = metrics.accuracy_score(y_test, predictions)
+    std_acc[k - 1] = np.std(predictions == y_test) / np.sqrt(predictions.shape[0])
+
+
+print(f'jsi score: {jsi_acc}')
+print(f'std score: {std_acc}')
+
+
+plt.figure(figsize=(10,7))
+plt.plot(range(1, k_katsayisi), jsi_acc, color='r')
+plt.fill_between(range(1, k_katsayisi), jsi_acc + 1 * std_acc, alpha=0.20)
+plt.legend(('accuracy', 'std'), prop={'size': 8})
+plt.xlabel('Number of Neighboors', color='r')
+plt.ylabel('Accuracy', color='r')
+plt.grid()
+plt.tight_layout()  #  alt grafiklerin ve eksen etiketlerinin çakışmasını önlemek için otomatik olarak alt grafiklerin arasındaki boşluğu ayarlar
+plt.show()
+
+
+print(f'En iyi doğruluk oranı: {jsi_acc.max()}\n'
+        f'Sırası: {jsi_acc.argmax() + 1}')
+# endregion
+
+
+
+# region Veri setindeki müşterilerin yaşına, gelirine veya eğitim seviyesine dayanarak, belirli bir kategoriye ait olma olasılıklarını tahmin et
+df.columns
+
+X = df[['age', 'income', 'ed']].values
+print(X)
+
+y = df['custcat'].values
+print(y)
+
+
+X_train , X_test, y_train, y_test = train_test_split(X, y ,random_state=42, test_size=0.2)
+
+X = preprocessing.StandardScaler().fit_transform(X)
+print(X)
+
+
+neighbor = KNeighborsClassifier(n_neighbors=5).fit(X_train, y_train)
+y_sonuc = neighbor.predict(X_test)
+print(y_sonuc)
+
+
+komsuluk_kat_s = int(input("Komşuluk kat sayısı giriniz: "))
+uzunluk = komsuluk_kat_s - 1
+jsi = np.zeros(uzunluk)
+std = np.zeros(uzunluk)
+
+for k in range(1, komsuluk_kat_s):
+    neigh = KNeighborsClassifier(n_neighbors=k).fit(X_train, y_train)
+    y_tahmin = neigh.predict(X_test)
+
+    jsi[k - 1] = metrics.accuracy_score(y_test, y_tahmin)
+    std[k - 1] = np.std(y_tahmin == y_test) / np.sqrt(y_tahmin.shape[0])
+
+
+print(f'jsi:  {jsi}')
+print(f'std: {std}')
+
+
+plt.figure(figsize=(10,7))
+plt.plot(range(1, komsuluk_kat_s), jsi, color='purple')
+plt.fill_between(range(1, komsuluk_kat_s), jsi + 1 * std, color='pink', alpha=0.5)
+plt.legend(('accuracy', 'std'), prop={'size': 8})
+plt.xlabel('Number of Neighboors', color='r')
+plt.ylabel('Accuracy', color='r')
+plt.grid()
+plt.tight_layout()
+plt.show()
+
+
+print(f'En iyi doğruluk değeri: {jsi.max()}\n'
+        f'Sırası: {jsi.argmax() + 1}')
+# endregion
+
+
+
+# region Veri setindeki özellikler arasında hangileri, bir müşterinin kategorisini belirlemek için daha belirleyici olabilir (Bu soruyu görsel araçlarla çeşitli gösterimler yap)
+
+features = ['region', 'tenure', 'age', 'marital', 'address', 'income', 'ed', 'employ', 'retire', 'gender', 'reside']
+target = 'custcat'
+
+plt.figure(figsize=(18, 10))
+for i, feature in enumerate(features, 1):
+    plt.subplot(3, 4, i)
+    sns.histplot(data=df, x=feature, hue=target, multiple="stack")
+    plt.title(f'{feature} Dağılımı')
+    plt.xlabel(feature)
+    plt.ylabel("Frekans")
+plt.tight_layout()
+plt.show()
+
+
+# Özellikler Arasındaki Korelasyon Haritası'nın gösterimi
+plt.figure(figsize=(12, 8))
+sns.heatmap(df.corr(), annot=True, cmap="coolwarm", fmt=".2f")
+plt.title("Özellikler Arasındaki Korelasyon Haritası")
+plt.show()
 # endregion
