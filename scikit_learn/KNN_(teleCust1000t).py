@@ -131,8 +131,8 @@ komsu = KNeighborsClassifier(n_neighbors=4).fit(X_train, y_train)
 y_sonucu = komsu.predict(X_test)
 print(y_sonucu)
 
-print(f'Train: {metrics.accuracy_score(y_test, komsu.predict(X_test))}')
-print(f'Test: {metrics.accuracy_score(y_train, komsu.predict(X_train))}')
+print(f'Test: {metrics.accuracy_score(y_test, komsu.predict(X_test))}')
+print(f'Train: {metrics.accuracy_score(y_train, komsu.predict(X_train))}')
 
 
 k_sayisi = int(input("K sayısı gir: "))
