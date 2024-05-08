@@ -11,6 +11,7 @@ from six import StringIO
 import pydotplus
 import matplotlib.image as mpimg
 import seaborn as sns
+from sklearn.ensemble import RandomForestClassifier  # ensemble modülünden RandomForestClassifier'ı çağırdık
 
 
 
@@ -356,5 +357,55 @@ plt.show()
 plt.subplot(2,1,2)
 plot_tree(decision_tree_gini, filled=True, feature_names=['BP','Cholesterol'], class_names=decision_tree_gini.classes_)
 plt.title('Decision Tree Gini', color='r')
+plt.show()
+# endregion
+
+
+
+# region random forest ile kişilerin hangi ilacı kullanacağını belirleyip tahmin yap
+df.columns
+
+X = df[['Age', 'Sex', 'BP', 'Cholesterol', 'Na_to_K']].values
+print(X)
+
+y = df['Drug'].values
+print(y)
+
+
+le_sex = preprocessing.LabelEncoder().fit(['F', 'M'])
+X[:,1] = le_sex.transform(X[:,1])
+print(X)
+
+le_BP = preprocessing.LabelEncoder().fit(['LOW', 'NORMAL', 'HIGH'])
+X[:,2] = le_BP.transform(X[:,2])
+print(X)
+
+le_Cholesterol = preprocessing.LabelEncoder().fit(['NORMAL','HIGH'])
+X[:,3] = le_Cholesterol.transform(X[:,3])
+print(X)
+
+X = preprocessing.StandardScaler().fit_transform(X)
+print(X)
+
+X_train, X_test, y_train, y_test = train_test_split(X,y,test_size=0.2)
+
+random_forrest = RandomForestClassifier(n_estimators=100)  # n_estimators= Ağaç sayısını belirler. Daha fazla ağaç daha fazla çeşitlilik ve iyi sonuç demektir ancak daha fazla hesaplama maliyeti olur.
+# criterion= Ağaçların bölünme kriterini belirler. "gini" veya "entropy" olabilir.
+# max_depth= Her ağacın maksimum derinliğini sınırlar. Ağaçların derinleşmesini önler, bu da aşırı uydurmaya karşı koruma sağlayabilir.
+# n_jobs= Model eğitimi sırasında kullanılacak iş parçacığı sayısını belirler. Eğer -1 olarak ayarlanırsa, tüm işlemciler kullanılır.
+random_forrest.fit(X_train, y_train)
+y_prediction = random_forrest.predict(X_test)
+print(y_prediction)
+
+print(f'Modelin doğruluğunun skoru: {metrics.accuracy_score(y_test, y_prediction)}')
+
+
+
+plt.figure(figsize=(10, 7))
+plt.bar(y_test, metrics.accuracy_score(y_test, y_prediction))
+plt.xlabel('Sınıflar')
+plt.ylabel('Doğruluk')
+plt.title('Sınıf Doğruluk Oranları')
+plt.xticks(rotation=45)
 plt.show()
 # endregion
