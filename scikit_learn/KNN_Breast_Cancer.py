@@ -58,9 +58,9 @@ print(f'En iyi test sırası: {test_accuracy.index(max(test_accuracy)) + 1}\n'
 
 
 # KNN En Yakın Komşuluk Regresyonu
-regression = KNeighborsRegressor(n_neighbors=10)
+regression = KNeighborsRegressor(n_neighbors=20)
 
 regression.fit(X_train, y_train)
 
 regressionn_score = regression.score(X_test, y_test)
-print(f'Regresyon skoru: {regressionn_score}')
+print(f'Regresyon skoru: {regressionn_score}')  # Tahmin edilen değer, yeni bir nokta için belirlenen komşu noktaların ortalamasıdır.

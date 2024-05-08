@@ -16,6 +16,7 @@ print(df.head(10).to_string())
 
 
 # region KNN algoritması yap (custcat için bul)
+
 # Hangi paketi kullanan kaç kullanıcı var
 df['custcat'].value_counts()
 
@@ -31,7 +32,7 @@ X = df[['region', 'tenure', 'age', 'marital', 'address', 'income', 'ed',
 print(X)
 
 
-#custcat için de bir matrix oluştur
+# custcat için de bir matrix oluştur
 
 y = df['custcat'].values  # custcat sütununun tüm satırının valueslerini aldık
 
@@ -249,8 +250,6 @@ print(y_test.shape)
 
 X = preprocessing.StandardScaler().fit_transform(X)
 print(X)
-
-
 
 
 komsu_katsayisi = int(input('Katsayı giriniz: '))
@@ -478,4 +477,61 @@ plt.figure(figsize=(12, 8))
 sns.heatmap(df.corr(), annot=True, cmap="coolwarm", fmt=".2f")
 plt.title("Özellikler Arasındaki Korelasyon Haritası")
 plt.show()
+# endregion
+
+
+
+# region Bütün features matrixlerin custcat ile olan ilişkisine bak
+df.columns
+
+X = df[['region', 'tenure', 'age', 'marital', 'address', 'income', 'ed',
+        'employ', 'retire', 'gender', 'reside']].values
+print(X)
+
+y = df['custcat'].values
+print(y)
+
+X_train,X_test,y_train,y_test = train_test_split(X,y,random_state=42,test_size=0.2)
+
+X = preprocessing.StandardScaler().fit_transform(X)
+print(X)
+
+komsu = KNeighborsClassifier(n_neighbors=6).fit(X_train,y_train)
+y_sonuc = komsu.predict(X_test)
+print(y_sonuc)
+
+print(f'Train accuracy score: {metrics.accuracy_score(y_test, komsu.predict(X_test))}')
+print(f'Test accuracy score: {metrics.accuracy_score(y_train, komsu.predict(X_train))}')
+
+
+komsu_katsayi = int(input("Katsayı giriniz: "))
+array_uzunluk = komsu_katsayi - 1
+jsi_acc = np.zeros(array_uzunluk)
+std_acc = np.zeros(array_uzunluk)
+
+for k in range(1, komsu_katsayi):
+    ev = KNeighborsClassifier(n_neighbors=k).fit(X_train,y_train)
+    y_predict_ciktisi = ev.predict(X_test)
+    print(y_predict_ciktisi)
+
+    jsi_acc[k - 1] = metrics.accuracy_score(y_test, y_predict_ciktisi)
+    std_acc[k - 1] = np.std(y_predict_ciktisi == y_test) / np.sqrt(y_predict_ciktisi.shape[0])
+
+
+print(f'jsi acc: {jsi_acc}')
+print(f'std_acc: {std_acc}')
+
+
+plt.figure(figsize=(10,7))
+plt.plot(range(1, komsu_katsayi), jsi_acc, color='green')
+plt.fill_between(range(1, komsu_katsayi), jsi_acc + 1 * std_acc, alpha=0.33, color='b')
+plt.legend(('accuracy', 'std'), prop={'size': 8})
+plt.xlabel('Number of Neighboors', color='r')
+plt.ylabel('Accuracy', color='r')
+plt.grid()
+plt.tight_layout()
+plt.show()
+
+print(f'En iyi doğruluk değeri: {jsi_acc.max()}\n'
+        f'Sırası: {jsi_acc.argmax() + 1}')
 # endregion

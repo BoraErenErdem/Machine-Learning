@@ -217,7 +217,7 @@ train_y = np.asarray(train_df[['CO2EMISSIONS']])
 
 regression.fit(train_x, train_y)
 
-regression_coef = float('%.2f' % regression.coef_)
+regression_coef = float('%.2f' % regression.coef_[0][0])
 regression_intercept = float('%.2f' % regression.intercept_[0])
 
 print(regression_coef)
@@ -272,8 +272,8 @@ regression.fit(x_train, y_train)
 regression.score(x_test, y_test)  # test ve train arasında under fitting var (düşük uydurma)
 regression.score(x_train, y_train)
 
-print(f'Katsayılar: \n', regression.coef_)
-print(f'Sabit Katsayı: \n', regression.intercept_)
+print(f'Katsayılar: \n', regression.coef_[0][0])
+print(f'Sabit Katsayı: \n', regression.intercept_[0])
 
 motor_genisligi = np.array([[float(input('Motor hacmi: '))]])
 tahmin = regression.predict(motor_genisligi)
@@ -478,5 +478,83 @@ plt.plot(X_test, y_pred, color='red')
 plt.xlabel('ENGINESIZE', color='r')
 plt.ylabel('CO2EMISSIONS', color='r')
 plt.suptitle('ENGINESIZE vs CO2EMISSIONS (Linear Regression)', color='r')
+plt.show()
+# endregion
+
+
+
+# region CYLINDERS ve CO2EMISSIONS arasıdna simple lineer regrasyon ile train_test_split kullanarak kısa yoldan fonksiyonları ve methodları kullanarak yap
+cdf = df[['CYLINDERS', 'CO2EMISSIONS']]
+print(cdf.head().to_string())
+
+X = cdf[['CYLINDERS']].values
+print(X)
+
+y = cdf[['CO2EMISSIONS']].values
+print(y)
+
+
+X_train, X_test, y_train,y_test = train_test_split(X,y,random_state=42,test_size=0.2)
+
+regrasyon = linear_model.LinearRegression()
+regrasyon.fit(X_train,y_train)
+
+print("Eğitim seti skoru:", regrasyon.score(X_train, y_train))
+print("Test seti skoru:", regrasyon.score(X_test, y_test))
+
+regrasyon_coef = float('%.2f' % regrasyon.coef_[0][0])
+regrasyon_intercept = float('%.2f' % regrasyon.intercept_[0])
+
+silindir_miktari = int(input('Silindir sayısını giriniz: '))
+co2 = regrasyon_coef * silindir_miktari + regrasyon_intercept
+print(co2)
+
+
+y_predict = regrasyon.predict(X_test)
+print(y_predict)
+print(f'r2 skoru: %.2f' % r2_score(y_predict,y_test))
+# endregion
+
+
+
+# region ENGINESIZE, CYLINDERS ve FUELCONSUMPTION_COMB'a dayanarak CO2EMISSIONS arasındaki ilişkiyi kısa yoldan method ve fonksiyonlar yardımıyla bul (Çoklu Lineer Regresyon)
+df.columns
+
+X = df[['ENGINESIZE', 'CYLINDERS','FUELCONSUMPTION_COMB']].values
+print(X)
+
+y = df[['CO2EMISSIONS']].values
+print(y)
+
+X_train,X_test,y_train,y_test = train_test_split(X,y,random_state=42,test_size=0.2)
+
+regression = linear_model.LinearRegression()
+regression.fit(X_train,y_train)
+
+print(f'Train Score: {regression.score(X_train,y_train)}')
+print(f'Test Score: {regression.score(X_test,y_test)}')
+
+regression_coef = float(regression.coef_[0][0])
+regression_intercept = float(regression.intercept_[0])
+
+Enginesize = float(input("Motor hacmini giriniz: "))
+Cylinders = int(input("Silindir sayısını giriniz: "))
+Ort_yakit_tuk = float(input("Ortalama yakıt tüketimini giriniz: "))
+Co2 = (regression_coef * Enginesize) + (regression_coef * Cylinders) + (regression_coef * Ort_yakit_tuk) + regression_intercept
+print(floor(Co2))
+
+y_tahmini = regression.predict(X_test)
+print(y_tahmini)
+print(f'r2_score: %.2f' % r2_score(y_tahmini, y_test))
+
+
+fig = plt.figure(figsize=(12, 9))
+ax = fig.add_subplot(111, projection='3d')
+scatter = ax.scatter(X_train[:, 0], X_train[:, 1], X_train[:, 2], c=y_train, cmap='viridis', s=50)  # c parametresi, veri noktalarının renklendirilmesi için kullanılır, bu yüzden yalnızca bir boyutu alabilir. Bu nedenle, doğru şekilde renklendirmek için bir boyut daha seçmeniz gerekecek. Yani özetle scatter içine birden fazla boyutu veremezsin tek tek boyutu seçip vermen gerekir..!
+ax.set_xlabel('ENGINESIZE')
+ax.set_ylabel('CYLINDERS')
+ax.set_zlabel('FUELCONSUMPTION_COMB')
+ax.set_title('ENGINESIZE, CYLINDERS, FUELCONSUMPTION_COMB vs CO2EMISSIONS')
+plt.colorbar(scatter, label='CO2EMISSIONS')
 plt.show()
 # endregion

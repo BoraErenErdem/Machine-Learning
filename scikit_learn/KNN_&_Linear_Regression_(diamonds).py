@@ -41,7 +41,8 @@ print(y)
 X_train, X_test, y_train, y_test = train_test_split(X,y,test_size=0.2,random_state=42)
 
 
-model = linear_model.LinearRegression().fit(X_train, y_train)
+model = linear_model.LinearRegression()
+model.fit(X_train, y_train)
 
 model.score(X_test, y_test)  # 0.9189
 model.score(X_train, y_train)  # 0.9199
