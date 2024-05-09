@@ -17,6 +17,7 @@ from tensorflow.keras.models import load_model  # bu yaptığım modeli kaydedip
 
 
 
+# region bisiklet datasını derin öğrenme ile fiyat tahminini yapıp sonuçları karşılaştır
 # veriyi dataframe'e çevirip görselleştirme
 df = pd.read_csv('Data/bisiklet_fiyatlari.csv')
 print(df.head().to_string())
@@ -44,9 +45,9 @@ print(y_test.shape)
 
 
 # scaling (ölçeklendirme): Buradaki amaç nöronlara vereceğimiz verinin boyutunu küçültmek ve böylece daha hızlı işlem yapabilelim. Aslında Normalizasyon yaptık..!
-scaler = MinMaxScaler()  # MinMaxScaler() ile yaptık
-scaler.fit(X_train)
-print(X)  # Bu kısım yani fit ve transform işlemlerini ayrı ayrı yapılması farklı veri setleri üzerinde ölçekleme yapabilir ve uygun ölçeklendirme parametrelerini (minimum ve maksimum değerler) yeniden kullanmamızı sağlar.
+scaler = MinMaxScaler()  # MinMaxScaler sınıfından bir örnek oluşturuyoruz. Bu örnek, veri setini ölçeklendirmek için kullanılacak dönüşüm faktörlerini ve metrikleri tutar.
+scaler.fit(X_train)  # (X_train) üzerinde fit metodu çağrılarak, Min-Max ölçekleyicisinin parametreleri hesaplanır. Bu adımda, her bir özellik için minimum ve maksimum değerler belirlenir.
+# Bu kısım yani fit ve transform işlemlerini ayrı ayrı yapılması sayesinde farklı veri setleri üzerinde ölçekleme yapabilir ve uygun ölçeklendirme parametrelerini (minimum ve maksimum değerler) yeniden kullanmamızı sağlar.
 X_train = scaler.transform(X_train)
 X_test = scaler.transform(X_test)
 
@@ -107,7 +108,7 @@ tahmin_df = pd.DataFrame(y_test,columns=['Gerçek Y'])
 print(tahmin_df)
 
 test_tahminleri.shape
-test_tahminleri = pd.Series(test_tahminleri.reshape(330,))  # test tahminlerini Series'e dönüştürdük çünkü tahmin_df'nin içerisine yerleştirmek istiyoruz. # reshape(330,) ile index olamdan konumlandırmak istediğimiz için böyle yaptık.
+test_tahminleri = pd.Series(test_tahminleri.reshape(330,))  # test tahminlerini Series'e dönüştürdük çünkü tahmin_df'nin içerisine yerleştirmek istiyoruz. # reshape(330,) ile index olmadan konumlandırmak istediğimiz için böyle yaptık.
 print(test_tahminleri)
 
 
@@ -144,3 +145,4 @@ bisiklet_modeli = load_model('bisiklet_modeli.h5')
 # Yukarıdaki Modeli Kayıt Etme ve Modeli Çağırma işlemleri artık eski kaldığı için yeni sürümlerde farklı yollardan çağırılıyor. Eski model artık kullanışsız.
 
 # NOT: Tensorflow'da model kurarken önce ihtiyaçların belirlenmesi ve istenilen sonucun kurgulanması çok önemli.
+# endregion
