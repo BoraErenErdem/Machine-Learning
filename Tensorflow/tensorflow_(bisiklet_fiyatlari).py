@@ -1,9 +1,11 @@
 
+
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import MinMaxScaler  # Ölçeklendirme işlemini yapmak için gerekli olan sınıf, genellikle [0, 1] veya [-1, 1] ölçeklendirilmesini sağlar.
+from sklearn import preprocessing
 import tensorflow as tf
 from tensorflow.keras.models import Sequential  # Burada modeli oluşturduk
 from tensorflow.keras.layers import Dense  # Burada model içersine katmanları koyduk
@@ -120,7 +122,7 @@ print(tahmin_df)
 # Görselleştirme
 sns.scatterplot(x='Gerçek Y', y='Tahmin Y', data=tahmin_df)
 
-mean_absolute_error(tahmin_df['Gerçek Y'], tahmin_df['Tahmin Y'])  # Output: 7.304537427869318 hata değeri. Bunu şöyle yorumla: Ortalama fiyatı 872tl olan bir üründen 7tl sapma payın olursa sorun olmaz. Bu ver iseti için geçerlidir başka veri setinde 7'lik bir sapma çok iyi veya çok kötü oalrak değerlendirilebilir.
+mean_absolute_error(tahmin_df['Gerçek Y'], tahmin_df['Tahmin Y'])  # Output: 7.304537427869318 hata değeri. Bunu şöyle yorumla: Ortalama fiyatı 872tl olan bir üründen 7tl sapma payın olursa sorun olmaz. Bu veri seti için geçerlidir başka veri setinde 7'lik bir sapma çok iyi veya çok kötü olarak değerlendirilebilir.
 
 df.describe()
 
