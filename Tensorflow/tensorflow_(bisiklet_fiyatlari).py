@@ -4,15 +4,15 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import MinMaxScaler  # Ölçeklendirme işlemini yapmak için gerekli olan sınıf, genellikle [0, 1] veya [-1, 1] ölçeklendirilmesini sağlar.
+from sklearn.preprocessing import MinMaxScaler  # Ölçeklendirme işlemini yapmak için gerekli olan sınıf, genellikle [0, 1] veya [-1, 1] ölçeklendirilmesini sağlar. (Normalizasyon türü)
 from sklearn import preprocessing
 import tensorflow as tf
-from tensorflow.keras.models import Sequential  # Burada modeli oluşturduk
+from tensorflow.keras.models import Sequential  # Burada modeli oluşturduk # Sequential modeli, sıralı katmanlarla bir sinir ağı oluştur
 from tensorflow.keras.layers import Dense  # Burada model içersine katmanları koyduk
 from sklearn.metrics import mean_absolute_error  #  gerçek değerlerle tahmin edilen değerler arasındaki ortalama mutlak farkı ölçer. Değeri sıfıra ne kadar yakınsa, modelin tahminleri gerçek değerlere o kadar yakındır. Daha düşük bir MAE, daha iyi bir model performansını gösterir.
 import seaborn as sns
 from sklearn.metrics import mean_squared_error  # gerçek değerlerle tahmin edilen değerler arasındaki ortalama karesel farkı ölçer. Değeri sıfıra ne kadar yakınsa, modelin tahminleri gerçek değerlere o kadar yakındır.
-from tensorflow.keras.models import load_model  # bu yaptığım modeli kaydedip sonra tekrar kullanmama olanak sağlar
+from tensorflow.keras.models import load_model  # bu yaptığım modeli kaydedip sonra tekrar kullanmama olanak sağlar ancak eski bir yöntemdir
 
 
 
@@ -44,7 +44,7 @@ print(y_train.shape)
 print(y_test.shape)
 
 
-# scaling (ölçeklendirme): Buradaki amaç nöronlara vereceğimiz verinin boyutunu küçültmek ve böylece daha hızlı işlem yapabilelim. Aslında Normalizasyon yaptık..!
+# scaling (ölçeklendirme): Buradaki amaç nöronlara vereceğimiz verinin boyutunu küçültmek ve böylece daha hızlı işlem yapabilmek. Aslında Normalizasyon yaptık..!
 scaler = MinMaxScaler()  # MinMaxScaler sınıfından bir örnek oluşturuyoruz. Bu örnek, veri setini ölçeklendirmek için kullanılacak dönüşüm faktörlerini ve metrikleri tutar.
 scaler.fit(X_train)  # (X_train) üzerinde fit metodu çağrılarak, Min-Max ölçekleyicisinin parametreleri hesaplanır. Bu adımda, her bir özellik için minimum ve maksimum değerler belirlenir.
 # Bu kısım yani fit ve transform işlemlerini ayrı ayrı yapılması sayesinde farklı veri setleri üzerinde ölçekleme yapabilir ve uygun ölçeklendirme parametrelerini (minimum ve maksimum değerler) yeniden kullanmamızı sağlar.
@@ -94,7 +94,7 @@ sns.lineplot(x=range(len(loss)), y=loss)  # x= x ekseninde loss içerisinde kaç
 # loss değerlerini bulma
 train_loss = model.evaluate(X_train,y_train)  # train'deki loss değerini verir
 test_loss = model.evaluate(X_test,y_test)  # test'deki loss değerini verir
-# model.evaluate yöntemi, eğitilmiş bir makine öğrenimi modelinin performansını değerlendirmek için kullanılır. Bu yöntem, modelin belirli bir test veri kümesi üzerindeki performansını ölçer ve genellikle doğruluk, kayıp veya başka bir performans metriği sağlar.
+# model.evaluate yöntemi, eğitilmiş bir makine öğrenimi modelinin performansını değerlendirmek için kullanılır. Bu yöntem, modelin belirli bir test veri kümesi üzerindeki performansını ölçer ve genellikle doğruluk, kayıp veya başka bir performans metriği sağlar. Eğer train_loss ve test_loss değerleri birbirine yakın çıkarsa mantıklı işlem yapıyoruz demektir.
 print(train_loss)
 print(test_loss)
 
@@ -145,4 +145,80 @@ bisiklet_modeli = load_model('bisiklet_modeli.h5')
 # Yukarıdaki Modeli Kayıt Etme ve Modeli Çağırma işlemleri artık eski kaldığı için yeni sürümlerde farklı yollardan çağırılıyor. Eski model artık kullanışsız.
 
 # NOT: Tensorflow'da model kurarken önce ihtiyaçların belirlenmesi ve istenilen sonucun kurgulanması çok önemli.
+# endregion
+
+
+
+
+# region bisiklet datasını derin öğrenme ile analiz et
+df = pd.read_csv('Data/bisiklet_fiyatlari.csv')
+print(df.head().to_string())
+
+df.columns
+
+X = df[['BisikletOzellik1', 'BisikletOzellik2']].values
+print(X)
+
+y = df['Fiyat'].values
+print(y)
+
+X_train,X_test,y_train,y_test = train_test_split(X,y,random_state=42,test_size=0.2)
+
+print(X_train.shape)
+print(X_test.shape)
+print(y_train.shape)
+print(y_test.shape)
+
+minmax_scaler = preprocessing.MinMaxScaler()
+minmax_scaler.fit(X_train)
+X_train = minmax_scaler.transform(X_train)
+X_test = minmax_scaler.transform(X_test)
+
+print(X_train)
+print(X_test)
+
+derinogrenme_modeli = Sequential()
+
+derinogrenme_modeli.add(Dense(5,activation='relu'))
+derinogrenme_modeli.add(Dense(5,activation='relu'))
+derinogrenme_modeli.add(Dense(5,activation='relu'))
+derinogrenme_modeli.add(Dense(5,activation='relu'))
+
+derinogrenme_modeli.add(Dense(1))
+
+
+derinogrenme_modeli.compile(optimizer='rmsprop', loss='mse')
+
+derinogrenme_modeli.fit(X_train,y_train,epochs=250)
+
+kayip = derinogrenme_modeli.history.history['loss']
+print(kayip)
+
+sns.lineplot(x=range(len(kayip)), y=kayip)
+
+train_kayip = derinogrenme_modeli.evaluate(X_train,y_train)
+test_kayip = derinogrenme_modeli.evaluate(X_test,y_test)
+
+print(train_kayip)
+print(test_kayip)
+
+y_predict = derinogrenme_modeli.predict(X_test)
+print(y_predict)
+
+new_df = pd.DataFrame(y_test,columns=['Gerçek Tahmin Y'])
+print(new_df)
+
+y_predict.shape
+y_predict = pd.Series(y_predict.reshape(200,))
+print(y_predict)
+
+new_df = pd.concat([new_df,y_predict], axis=1)
+print(new_df)
+
+new_df.columns = ['Gerçek Tahmin Y', 'Y_Predict']
+print(new_df)
+
+sns.scatterplot(x='Gerçek Tahmin Y', y='Y_Predict', data=new_df)
+
+mean_absolute_error(new_df['Gerçek Tahmin Y'], new_df['Y_Predict'])
 # endregion
