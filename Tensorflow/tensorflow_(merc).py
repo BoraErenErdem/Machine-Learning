@@ -134,6 +134,7 @@ model.predict(yeni_araba_Series)
 
 
 
+
 # region veri setinde bozuk verileri varsa onar yoksa da veri ön işlemesi yapıp derin öğrenme ile fiyat tahmin analizini yap
 sns.pairplot(df)
 

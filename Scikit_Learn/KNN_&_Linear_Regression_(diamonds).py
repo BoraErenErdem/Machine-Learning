@@ -17,6 +17,7 @@ from sklearn import preprocessing,metrics
 df = sns.load_dataset('diamonds')
 print(df.head().to_string())
 
+sns.lineplot(df)
 
 # region Elmasların fiyatlarını tahmin eden lineer model kur
 

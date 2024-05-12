@@ -44,6 +44,21 @@ print(y_train.shape)
 print(y_test.shape)
 
 
+
+# NOT: Derin öğrenme modelleri genellikle MinMaxScaler() kullanırken, lineer regresyon veya destek vektör makineleri gibi modeller için StandardScaler() tercih edilir.
+# MinMaxScaler():
+# * Veriyi belirli bir aralığa (genellikle 0 ile 1 arasına) ölçeklendirir.
+# * Negatif ve pozitif değerler arasında tutarsızlık olmaz.
+# * Aykırı değerlerin etkisi azalabilir, ancak aykırı değerlerin aralığı genellikle sıkıştırılabilir.
+
+
+# StandartScaler():
+# * Veriyi ortalama 0 ve standart sapma 1 olacak şekilde standartlaştırır.
+# * Negatif ve pozitif değerler arasında tutarsızlık olabilir, özellikle veri normal dağılıma yakınsa.
+# * Aykırı değerlerin etkisi daha belirgindir, ancak orijinal dağılım korunur.
+
+
+
 # scaling (ölçeklendirme): Buradaki amaç nöronlara vereceğimiz verinin boyutunu küçültmek ve böylece daha hızlı işlem yapabilmek. Aslında Normalizasyon yaptık..!
 scaler = MinMaxScaler()  # MinMaxScaler sınıfından bir örnek oluşturuyoruz. Bu örnek, veri setini ölçeklendirmek için kullanılacak dönüşüm faktörlerini ve metrikleri tutar.
 scaler.fit(X_train)  # (X_train) üzerinde fit metodu çağrılarak, Min-Max ölçekleyicisinin parametreleri hesaplanır. Bu adımda, her bir özellik için minimum ve maksimum değerler belirlenir.
