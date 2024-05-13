@@ -12,11 +12,18 @@ import pydotplus
 import matplotlib.image as mpimg
 import seaborn as sns
 from sklearn.ensemble import RandomForestClassifier  # ensemble modülünden RandomForestClassifier'ı çağırdık
+from sklearn.preprocessing import LabelEncoder
+from sklearn.model_selection import GridSearchCV
+from sklearn.model_selection import KFold, cross_val_score
+from sklearn.model_selection import cross_validate
 
 
 
 df = pd.read_csv('Data/drug200.csv')
 print(df.head().to_string())
+
+
+# NOT: Entropy ve Gini genellikle benzer sonuçlar üretir. Bu algoritmanın uygulanmasına ve veri setine göre değişebilir. Eğer criterion= verilmezse default olarak Gini hesaplaması yapılır..!
 
 
 # region Hangi ilaçları kullanacaklarını seçmek için karar ağacı yap ve en son hangi etkenle daha önemli önem sırasına göre sırayıp göster
@@ -86,7 +93,7 @@ print(importance_df_gini)
 
 
 plt.figure(figsize=(10, 7))
-plt.barh(importance_df['Özellikler'], importance_df['Önemlilik Derecesi'], color='skyblue')
+plt.barh(importance_df_gini['Özellikler'], importance_df_gini['Önemlilik Derecesi'], color='skyblue')
 plt.xlabel('Önemlilik Derecesi')
 plt.ylabel('Özellikler')
 plt.title('Özelliklerin Önem Sırası')
@@ -153,7 +160,7 @@ print(importance_df_gini)
 
 
 plt.figure(figsize=(10, 7))
-plt.barh(importance_df['Özellikler'], importance_df['Önemlilik Derecesi'], color='skyblue')
+plt.barh(importance_df_entropy['Özellikler'], importance_df_entropy['Önemlilik Derecesi'], color='skyblue')
 plt.xlabel('Önemlilik Derecesi')
 plt.ylabel('Özellikler')
 plt.title('Özelliklerin Önem Sırası')
@@ -389,7 +396,7 @@ print(X)
 
 X_train, X_test, y_train, y_test = train_test_split(X,y,test_size=0.2)
 
-random_forrest = RandomForestClassifier(n_estimators=100)  # n_estimators= Ağaç sayısını belirler. Daha fazla ağaç daha fazla çeşitlilik ve iyi sonuç demektir ancak daha fazla hesaplama maliyeti olur.
+random_forrest = RandomForestClassifier(n_estimators=100, criterion='gini', max_depth=6)  # n_estimators= Ağaç sayısını belirler. Daha fazla ağaç daha fazla çeşitlilik ve iyi sonuç demektir ancak daha fazla hesaplama maliyeti olur.
 # criterion= Ağaçların bölünme kriterini belirler. "gini" veya "entropy" olabilir.
 # max_depth= Her ağacın maksimum derinliğini sınırlar. Ağaçların derinleşmesini önler, bu da aşırı uydurmaya karşı koruma sağlayabilir.
 # n_jobs= Model eğitimi sırasında kullanılacak iş parçacığı sayısını belirler. Eğer -1 olarak ayarlanırsa, tüm işlemciler kullanılır.

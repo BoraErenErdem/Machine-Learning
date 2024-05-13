@@ -37,8 +37,12 @@ komsuluk_sayisi = int(input("Komşuluk sayısını giriniz: "))
 for k in range(1, komsuluk_sayisi):
     sinif = KNeighborsClassifier(n_neighbors=k).fit(X_train, y_train)
     # Eğitim ve test doğruluk skorlarını hesaplayıp listelere ekleniyor
-    train_accuracy.append(sinif.score(X_train, y_train))  # .score() ile accuracy_score() aynı işlevi görür aralarında fark yoktur..!
+    train_accuracy.append(sinif.score(X_train, y_train))  # .score() ile accuracy_score() aynı işlevi görür aralarında fark yoktur..! Genel olarak accuracy_score() sınıflandırma modellerinde kullan.
     test_accuracy.append(sinif.score(X_test, y_test))
+
+print(f'Train Accuracy: {train_accuracy}')
+print(f'Test Accuracy: {test_accuracy}')
+
 
 # Grafik çizdirme
 plt.figure(figsize=(10,7))

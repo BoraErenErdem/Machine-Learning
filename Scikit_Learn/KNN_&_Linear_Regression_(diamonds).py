@@ -39,6 +39,29 @@ y = df['price'].values
 print(y)
 
 
+
+# LabelEncoder() ile scaler olamayn sütunları neseney dönüştürüp sonra numpy ile scaler büyüklüğe dönüştürüp işlem yapabiliriz
+# (get_dummies varyantı ancak makina öğreniminde daha çok LabelEncoder() kullanılır..!)
+# X = df[['carat', 'cut', 'color', 'clarity', 'depth', 'table','x', 'y', 'z']].values
+# print(X)
+#
+# y = df['price'].values
+# print(y)
+#
+#
+# le_cut = preprocessing.LabelEncoder().fit(['Ideal', 'Premium', 'Very Good', 'Good', 'Fair'])
+# X[:,1] = le_cut.transform(X[:,1])
+# print(X)
+#
+# le_color = preprocessing.LabelEncoder().fit(['G', 'E', 'F', 'H', 'D', 'I', 'J'])
+# X[:, 2] = le_color.transform(X[:, 2])
+# print(X)
+#
+# le_clarity = preprocessing.LabelEncoder().fit(['SI1', 'VS2', 'SI2', 'VS1', 'VVS2', 'VVS1', 'IF', 'I1'])
+# X[:,3] = le_clarity.transform(X[:,3])
+# print(X)
+
+
 X_train, X_test, y_train, y_test = train_test_split(X,y,test_size=0.2,random_state=42)
 
 

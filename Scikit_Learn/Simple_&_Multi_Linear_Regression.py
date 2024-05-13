@@ -36,7 +36,7 @@ print(cdf.head().to_string())
 msk = np.random.rand(len(df)) <= 0.8
 print(msk)
 
-train_df = cdf[msk]  # True ve Flase olan değerleri gösterdi
+train_df = cdf[msk]  # True ve False olan değerleri gösterdi
 test_df = cdf[~msk]  # True olan değerleri False'a çevirip gösterdi
 
 print(f'Train Set Satırı: {train_df.shape}')

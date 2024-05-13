@@ -391,7 +391,7 @@ plt.legend(('accuracy', 'std'), prop={'size': 8})
 plt.xlabel('Number of Neighboors', color='r')
 plt.ylabel('Accuracy', color='r')
 plt.grid()
-plt.tight_layout()  #  alt grafiklerin ve eksen etiketlerinin çakışmasını önlemek için otomatik olarak alt grafiklerin arasındaki boşluğu ayarlar
+plt.tight_layout()
 plt.show()
 
 

@@ -12,7 +12,7 @@ import pydotplus
 import matplotlib.image as mpimg
 import seaborn as sns
 from sklearn import linear_model
-from sklearn.model_selection import cross_validate  # cross_validate yani çapraz sorgulama temel olarak, mevcut veri setini eğitim ve test setlerine ayırmak yerine, veri setini birden fazla alt küme (katman) halinde böler ve her bir alt küme için modelin performansını değerlendirir. Bu, modelin genel performansını daha güvenilir bir şekilde ölçmeye yardımcı olur. Ayrıca cross_validate aşırı uyum sağlanmasını engeller.
+from sklearn.model_selection import cross_validate  # cross_validate yani çapraz sorgulama temel olarak, mevcut veri setini eğitim ve test setlerine ayırmak yerine, veri setini birden fazla alt küme (katman) halinde böler ve her bir alt küme için modelin performansını değerlendirir. Bu, modelin genel performansını daha güvenilir bir şekilde ölçmeye yardımcı olur. Ayrıca cross_validate modelin aşırı öğrenmesini engeller.
 from sklearn.datasets import make_regression
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.datasets import load_iris  # (data)
@@ -35,7 +35,7 @@ X, y = load_iris(return_X_y=True)  # girdi ve çıktı değişkenleri oluşturuy
 
 pipe.fit(X_train, y_train)
 
-accuracy_score(pipe.predict(X_test), y_test)
+accuracy_score(y_test, pipe.predict(X_test))
 
 
 
