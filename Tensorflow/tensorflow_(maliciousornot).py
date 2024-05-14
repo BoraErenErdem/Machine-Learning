@@ -25,6 +25,7 @@ from sklearn.metrics import confusion_matrix  # sınıflandırma modelinin perfo
 
 
 
+# region web sitelerinin zaralı olup olmadığını inceleyip bunların tahminini gösteren uygulama yap
 df = pd.read_csv('Data/maliciousornot.csv')
 print(df.head().to_string())
 
@@ -88,7 +89,7 @@ model_kayip_df.plot()
 
 
 
-# 2.ÖRNEK: Bu kısımda early_stopping değişkenine EarlyStopping() nesnesini atıyoruz. Burada amaç biz epochs'u çok versek bile aslında EarlyStopping() nesnesi val_loss'u takip ederek duruma göre overfitting olacağı epochs'u durduruyor ve overfitting olmsmsdını sağlıyor.
+# 2.ÖRNEK: Bu kısımda early_stopping değişkenine EarlyStopping() nesnesini atıyoruz. Burada amaç biz epochs'u çok versek bile aslında EarlyStopping() nesnesi val_loss'u takip ederek duruma göre overfitting olacağı epochs'u durduruyor ve overfitting olmamasını sağlıyor.
 model = Sequential()
 
 model.add(Dense(30, activation='relu'))
@@ -108,6 +109,7 @@ model_kayip_df = pd.DataFrame(model.history.history)
 print(model_kayip_df)
 
 model_kayip_df.plot()
+
 
 
 # 3.ÖRNEK: Bu kısımda Dropout() ile yüzde kaçında nöronları turn-off (açıp kapatacağımız) yapacağımızı belirledik. İlk input katmanından sonra son katmana kadar ekledik. Son katmana Dropout() vermemize gerek yok. Dikkat edilmesi gereken Dropout() kısmına 0.5'ten fazla değer veririsen seni uyarır. Çünkü 0.5'ten yukarısını vermek genellikle öğrenim açısından riskli olabilir.
@@ -140,7 +142,91 @@ print(tahminler)  # astype() yuvarlanmış tahminleri hangi türe dönüştürme
 
 
 # sınıflandırma değerleri ve sınıflandırma tahminleri
-print(classification_report(y_test, tahminler))  # precision: ne kadar doğru tahmin etmiş  #
+print(classification_report(y_test, tahminler))  # precision: ne kadar doğru tahmin etmiş
 
 print(confusion_matrix(y_test, tahminler))      # [[85 6] bu ifade de 6 tane yanlış bulmuş geri kalanları doğru bulmuş demek. Bu ver setine göre oldukça iyi.
                                                 #  [12 62]]
+# endregion
+
+
+
+
+# region web sitelerin hangisinin zararlı olup olmadığını tahmin et
+
+df = pd.read_csv('Data/maliciousornot.csv')
+print(df.head().to_string())
+
+df.columns
+
+df.corr()['Type'].sort_values()
+df.corr()['Type'].sort_values().plot(kind='bar')
+
+df.corr()['SOURCE_K'].sort_values().plot(kind='bar')
+
+df.dtypes
+
+df.columns
+
+X = df[['URL_LENGTH', 'NUMBER_SPECIAL_CHARACTERS',
+        'TCP_CONVERSATION_EXCHANGE', 'DIST_REMOTE_TCP_PORT', 'REMOTE_IPS',
+        'APP_BYTES', 'SOURCE_APP_PACKETS', 'REMOTE_APP_PACKETS',
+        'SOURCE_APP_BYTES', 'REMOTE_APP_BYTES', 'APP_PACKETS',
+        'DNS_QUERY_TIMES', 'SOURCE_A', 'SOURCE_B', 'SOURCE_C', 'SOURCE_D',
+        'SOURCE_F', 'SOURCE_E', 'SOURCE_G', 'SOURCE_H', 'SOURCE_I', 'SOURCE_J',
+        'SOURCE_K', 'SOURCE_M', 'SOURCE_L', 'SOURCE_N', 'SOURCE_O', 'SOURCE_P',
+        'SOURCE_R', 'SOURCE_S']].values
+
+print(X)
+
+y = df['Type'].values
+print(y)
+
+X_train, X_test, y_train, y_test = train_test_split(X,y,test_size=0.2,random_state=42)
+
+print(X_train.shape)
+print(X_test.shape)
+print(y_train.shape)
+print(y_test.shape)
+
+
+minmax_scaler = preprocessing.MinMaxScaler()
+X_train = minmax_scaler.fit_transform(X_train)
+X_test = minmax_scaler.transform(X_test)
+
+print(X_train)
+print(X_test)
+
+
+derin_model = Sequential()
+
+derin_model.add(Dense(30, activation='relu'))
+derin_model.add(Dropout(0.42))
+
+derin_model.add(Dense(20, activation='relu'))
+derin_model.add(Dropout(0.42))
+
+derin_model.add(Dense(15, activation='relu'))
+derin_model.add(Dropout(0.42))
+
+derin_model.add(Dense(1, activation='sigmoid'))
+
+derin_model.compile(optimizer='adam', loss='binary_crossentropy')
+
+
+erken_durdur = EarlyStopping(monitor='val_loss', mode='min', patience=20)
+
+
+derin_model.fit(X_train, y_train, validation_data=(X_test, y_test), epochs=550, callbacks=[erken_durdur])
+
+
+kayip_tahmini_df = pd.DataFrame(derin_model.history.history)
+print(kayip_tahmini_df)
+
+kayip_tahmini_df.plot()
+
+y_predict = np.round(derin_model.predict(X_test)).astype(int)
+print(y_predict)
+
+print(classification_report(y_test,y_predict))
+print(confusion_matrix(y_test, y_predict))
+# endregion
