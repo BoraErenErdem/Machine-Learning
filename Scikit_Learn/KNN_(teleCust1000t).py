@@ -13,7 +13,7 @@ import seaborn as sns
 df = pd.read_csv('Data/teleCust1000t.csv')
 print(df.head(10).to_string())
 
-
+df.info()
 
 # region KNN algoritması yap (custcat için bul)
 

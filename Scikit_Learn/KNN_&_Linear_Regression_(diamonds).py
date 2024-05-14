@@ -40,7 +40,7 @@ print(y)
 
 
 
-# LabelEncoder() ile scaler olamayn sütunları neseney dönüştürüp sonra numpy ile scaler büyüklüğe dönüştürüp işlem yapabiliriz
+# LabelEncoder() ile scaler olmayan sütunları nesneye dönüştürüp sonra numpy ile scaler büyüklüğe dönüştürüp işlem yapabiliriz
 # (get_dummies varyantı ancak makina öğreniminde daha çok LabelEncoder() kullanılır..!)
 # X = df[['carat', 'cut', 'color', 'clarity', 'depth', 'table','x', 'y', 'z']].values
 # print(X)

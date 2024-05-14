@@ -545,7 +545,7 @@ print(floor(Co2))
 
 y_tahmini = regression.predict(X_test)
 print(y_tahmini)
-print(f'r2_score: %.2f' % r2_score(y_tahmini, y_test))
+print(f'r2_score: %.2f' % r2_score(y_test, y_tahmini))
 
 
 fig = plt.figure(figsize=(12, 9))
