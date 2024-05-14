@@ -191,7 +191,7 @@ derinogr_modeli.add(Dense(11, activation='relu'))
 derinogr_modeli.add(Dense(11, activation='relu'))
 derinogr_modeli.add(Dense(11, activation='relu'))
 derinogr_modeli.add(Dense(11, activation='relu'))
-derinogr_modeli.add(Dense(11, activation='relu'))
+derinogr_modeli.add(Dense(10, activation='relu'))
 derinogr_modeli.add(Dense(1))
 
 derinogr_modeli.compile(optimizer='adam', loss='mse')

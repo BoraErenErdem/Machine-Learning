@@ -147,6 +147,7 @@ df.describe()
 yeni_bisiklet_ozellikleri = [[1751,1750]]
 
 yeni_bisiklet_ozellikleri = scaler.transform(yeni_bisiklet_ozellikleri)
+print(yeni_bisiklet_ozellikleri)
 
 model.predict(yeni_bisiklet_ozellikleri)
 
