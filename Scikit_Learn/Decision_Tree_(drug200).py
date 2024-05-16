@@ -209,6 +209,7 @@ importance_df = pd.DataFrame({'Özellikler': feature_names,
                                 'Entropy Önemlilik Derecesi': importance_entropy,
                                 'Gini Önemlilik Derecesi': importance_gini})
 
+print(importance_df)
 
 
 # Görselleştirme

@@ -80,7 +80,7 @@ model.add(Dense(4, activation='relu'))  # Bu kısımda katmanları (Hidden Layer
 model.add(Dense(4, activation='relu'))
 model.add(Dense(4, activation='relu'))
 
-model.add(Dense(1))  # Bu kısım output yani çıktı kısmıdır. Genelde sadece 1 tane nöron vermek yeterli olur.
+model.add(Dense(1))  # Bu kısım output yani çıktı kısmıdır.
 
 model.compile(optimizer='rmsprop', loss='mse')  # Bu kısımda modeli compile() ile birleştiriyoruz ve içine optimizasyon algoritmasını yazıyoruz.
 # optimizer= optimizasyon fonksiyonlarını buraya yazarız. Normalde en iyi sonuç veren Adam fonksiyonu olsa da burada görebilelim diye rmsprop kullandık.
