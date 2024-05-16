@@ -40,7 +40,7 @@ images = load_sample_images()['images']  # değişkende iki tane resim var
 print(images)
 
 images[0].shape  # değişkendeki ilk resmin boyutu
-# output: (427, 640, 3) ==> 427'ye 640 boyutlu ve resim renkli olduğu için 3 kanaldan oluşuyor demek
+# output: (427, 640, 3) ==> 427'ye 640 boyutlu ve resim renkli olduğu için 3 kanaldan oluşuyor demek yani 3 renkten oluşuyor
 
 images[1].shape  # değişkendeki ikinci resmin boyutu
 
@@ -58,7 +58,7 @@ images.shape  # değişkenin yeni boyutu
 # resimleri 2 boyutlu convolution yani evrişim katmanından geçirme işlemi
 cov_layer = tf.keras.layers.Conv2D(filters=32, kernel_size=7)  # filters= kullanmak istediğimiz filtre sayısını belirliyoruz  # kernel_size= filtrenin boyutu
 
-fmaps = cov_layer(images)  # resmin boyutları ve katmanları değişti çünkü 7 x 7 boyutlarına filtre uygulanırken yanadki boşluklardan dolayı filtre tam uygulanamadı. resmin kenarlarına da filtre uygulamak için resmin çevresine 'padding' eklenebilir. orjinal girdide 3 katman varken burada filters=32 kullandığımız için filtre 32 oldu.
+fmaps = cov_layer(images)  # resmin boyutları ve katmanları değişti çünkü 7 x 7 boyutlarına filtre uygulanırken yandaki boşluklardan dolayı filtre tam uygulanamadı. resmin kenarlarına da filtre uygulamak için resmin çevresine 'padding' eklenebilir. orjinal girdide 3 katman varken burada filters=32 kullandığımız için filtre 32 oldu.
 
 fmaps.shape
 
