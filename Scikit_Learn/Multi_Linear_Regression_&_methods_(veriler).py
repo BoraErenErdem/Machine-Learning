@@ -103,12 +103,27 @@ print(y_tahmin)
 
 
 # geri eleme (Backward Elimination) # Burada amacımız hangi değişken sistemi (boy çıktısını (yani y)) daha fazla bozuyorsa yani hangi değişkenin P-Valuesi(P) Significance Level'den(SL) daha yüksekse onu eleyerek devam edicem. Bu yüzden değişkenlerin hangisinin daha fazla etkilediğini görebilmek için bir dizi üzerinden gideceğim.
-X = np.append(arr=np.ones((22,1)).astype(int), values=boy_harici_df, axis=1)  # Her değişken için aslında her satır için 1 ekledik çünkü intercept veya bias terimi sabit bir katsayi) eklemek gerekir. Bu şekilde bağımsız değişkenlerin (X) katsayıları ile birlikte sabit bir terim kullanarak hedef değişkenini (y) tahmin edilmesini sağlar. Genelde sabit değişken (bias yada intercept) için 1 kullanılır.
+X = np.append(arr=np.ones((22,1)).astype(int), values=boy_harici_df, axis=1)  # Her değişken için aslında her satır için 1 ekledik çünkü intercept veya bias terimi sabit bir katsayi eklemek gerekir. Bu şekilde bağımsız değişkenlerin (X) katsayıları ile birlikte sabit bir terim kullanarak hedef değişkenini (y) tahmin edilmesini sağlar. Genelde sabit değişken (bias yada intercept) için 1 kullanılır.
 print(X)
 
 X_listesi = boy_harici_df[['ulke', 'kilo', 'yas', 'cinsiyet']].values  # Bütün kolonları aldım çünkü ilerde eleme işlemi yaparken bazı kolonları çıkartacağım. Bir nevi ön hazırlık yaptım..!
 print(X_listesi)
 X_listesi = np.array(X_listesi,dtype=float)
-model = sm.OLS(y,X_listesi).fit()  # OLS() sistemin istatiksel değerlerini çıkartmayı sağlar.
+model = sm.OLS(y,X_listesi).fit()  # sm.OLS() sistemin istatiksel değerlerini çıkartmayı sağlar.  # Burada y (yani boy) bağımlı değişkeni ile X_listesi yani bağımsız değişkenleri eğitiyoruz.
+print(model.summary())
+
+
+# Backward elimination kısmı için sm.OLS() ile en yüksek P-Values'i gördük ve şimdi modelden çıkarıyoruz
+X_listesi = boy_harici_df[['kilo', 'yas', 'cinsiyet']].values
+print(X_listesi)
+X_listesi = np.array(X_listesi,dtype=float)
+model = sm.OLS(y,X_listesi).fit()
+print(model.summary())
+
+
+X_listesi = boy_harici_df[['kilo', 'cinsiyet']].values
+print(X_listesi)
+X_listesi = np.array(X_listesi,dtype=float)
+model = sm.OLS(y,X_listesi).fit()
 print(model.summary())
 # endregion
