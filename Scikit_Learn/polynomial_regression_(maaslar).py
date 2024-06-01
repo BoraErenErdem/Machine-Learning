@@ -46,8 +46,8 @@ polynomial_regression = LinearRegression()
 polynomial_regression.fit(X_poly_train, y_train)
 
 # Daha düzgün bir polinom eğrisi çizmek için geniş bir aralıkta X değerleri oluşturma
-X_range = np.linspace(X.min(), X.max(), 500).reshape(-1, 1)  # np.linspace() fonksiyonu belirli bir aralıkta eşit aralıklı sayılar oluşturmak için kullanılır. Buradaki kullanma şekli başlangıç ve bitiş noktaları arasında belirli sayıda eşit aralıklı nokta üretmektir. X.min(), X.max(), 500 ifadeleri ise X'in minimum ve maksimum olarak arasında 500 eş parçaya böl dedik. Bunun amacı grafiği ve çıktıyı daha net ve pürüszüs gösterilmesini sağlamak. 500 yerine başka sayı verebilirim ancak bu maliyet, doğru olmayan çıktı ya da işlem yükü olarak bana geri dönebilir.
-# reshape(-1,1) kısmında ise -1 kısmı otomatik olarak boyutunu belirlemesi için yazdım. Virgüldenm sonra 1 yazmamın sebebi iki boyutlu bir sütun matrisi olması ve her satırın bir veri noktası olması için yazdım. Eğer reshape(-1,) yapsaydım o zaman tek boyutku kalmaya devam edecekti. Ancak benim makine öğreniminde işlem yapabilmem için 2 boyutlu sütun matrisine ihtiyacım var (kural bu)
+X_range = np.linspace(X.min(), X.max(), 500).reshape(-1, 1)  # np.linspace() fonksiyonu belirli bir aralıkta eşit aralıklı sayılar oluşturmak için kullanılır. Buradaki kullanma şekli başlangıç ve bitiş noktaları arasında belirli sayıda eşit aralıklı nokta üretmektir. X.min(), X.max(), 500 ifadeleri ise X'in minimum ve maksimum olacak şekilde arasını 500 eş parçaya böl dedik. Bunun amacı grafiği ve çıktıyı daha net ve pürüszüs gösterilmesini sağlamak. 500 yerine başka sayı verebilirim ancak bu maliyet, doğru olmayan çıktı ya da işlem yükü olarak bana geri dönebilir.
+# reshape(-1,1) kısmında ise -1 kısmı otomatik olarak boyutunu belirlemesi için yazdım. Virgülden sonra 1 yazmamın sebebi iki boyutlu bir sütun matrisi olması ve her satırın bir veri noktası olması için yazdım. Eğer reshape(-1,) yapsaydım o zaman tek boyutlu kalmaya devam edecekti. Ancak benim makine öğreniminde işlem yapabilmem için 2 boyutlu sütun matrisine ihtiyacım var (kural bu)
 X_range_poly = polynomial_features.transform(X_range)
 
 
