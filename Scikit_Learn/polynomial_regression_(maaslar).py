@@ -71,3 +71,64 @@ plt.ylabel('Maaş')
 plt.title('Polinom Regresyon ile Maaş Tahmini (Test Verisi)')
 plt.legend()
 plt.show()
+
+
+
+
+# region Polinomal regresyon ile maaşların eğitim seviyesine göre oranını bul ve grafikte göster
+df = pd.read_csv('Data/maaslar.csv')
+print(df.to_string())
+
+df.columns
+
+X = df[['Egitim Seviyesi']].values
+print(X)
+
+y = df['maas'].values
+print(y)
+
+X_train, X_test, y_train, y_test = train_test_split(X,y,test_size=0.2, random_state=42)
+print(X_train.shape)
+print(X_test.shape)
+print(y_train.shape)
+print(y_test.shape)
+
+
+regresyon = linear_model.LinearRegression()
+regresyon.fit(X_train,y_train)
+
+polinom_regresyon = preprocessing.PolynomialFeatures(degree=3)
+X_train_polinom = polinom_regresyon.fit_transform(X_train)
+X_test_polinom = polinom_regresyon.transform(X_test)
+
+
+polinom_regresyon_islemi = linear_model.LinearRegression()
+polinom_regresyon_islemi.fit(X_train_polinom,y_train)
+
+X_graph_pice = np.linspace(X.min(),X.max(),500).reshape(-1,1)
+X_graph_pice_polinom = polinom_regresyon.transform(X_graph_pice)
+
+
+# train verisi için görselleştirme
+plt.scatter(X_train, y_train, color='green', label='Train Data')
+plt.plot(X_graph_pice, polynomial_regression.predict(X_range_poly), color='red', label='Polynomial Regression')
+plt.xlabel('Eğitim Seviyesi')
+plt.ylabel('Maaş')
+plt.title('Polinom Regresyon ile Maaş Tahmini (Eğitim Verisi)')
+plt.legend()
+plt.show()
+
+# test verisi için görselleştirme
+plt.scatter(X_test, y_test, color='green', label='Test Data')
+plt.plot(X_graph_pice, polynomial_regression.predict(X_range_poly), color='purple', label='Polynomial Regression')
+plt.xlabel('Eğitim Seviyesi')
+plt.ylabel('Maaş')
+plt.title('Polinom Regresyon ile Maaş Tahmini (Test Verisi)')
+plt.legend()
+plt.show()
+
+
+# predict kısmı (tahmin)
+print(regresyon.predict([[11]]))
+print(regresyon.predict([[6.6]]))
+# endregion
