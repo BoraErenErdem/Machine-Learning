@@ -17,7 +17,7 @@ df.describe()  # verilerin istatistiksel ölçümlerini belirttim
 
 df[60].value_counts()  # 60'ıncı sütundaki yani son sütundaki verilerden kaç farklı şekilde var ona baktım
 
-# NOT: Yukarıdaki işlemi yaptığımızda (kaç tane mine kaç tane rock verisi var baktığımızda) sayıların birbirine yakın olduğunu görüyoruz. Bu verilerle predict edeceğimiz model iyi sonuç verecektir. Ancak veriler arasıdna çok fazla fark olsaydı (500 mine vs 5000 rock gibi) o zaman o verilerle predict edeceğimiz model doğru başarılı olmayacak ve doğru sonuçları veremeyecekti..!
+# NOT: Yukarıdaki işlemi yaptığımızda (kaç tane mine kaç tane rock verisi var baktığımızda) sayıların birbirine yakın olduğunu görüyoruz. Bu verilerle predict edeceğimiz model iyi sonuç verecektir. Ancak veriler arasıdna çok fazla fark olsaydı (500 mine vs 5000 rock gibi) o zaman o verilerle predict edeceğimiz model başarılı olmayacak ve doğru sonuçları veremeyecekti..!
 
 
 df.groupby(60).mean()  # groupby(60) ile mine ve rock olan 60'ıncı sütundaki veriyi grupladık ve .mean() ile her grubun ortalama değerlerini hesapladık.
