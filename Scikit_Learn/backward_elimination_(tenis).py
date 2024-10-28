@@ -98,7 +98,7 @@ model = sm.OLS(y,X).fit()
 print(model.summary())
 
 # P değerlerine göre sütunları eleme işlemi
-p_values = model.pvalues  # pvalues değerine bakar
+p_values = model.pvalues  # p-values değerine bakar
 threshold = 0.05  # yani Signification Level (SL)
 while True:
     p_values = model.pvalues
