@@ -336,6 +336,6 @@ coef_dict = get_feature_coefs(logistic_reg_elastic_net, 2, feature_cols)
 visualize_coefs(coef_dict)
 # endregion
 
-# L2, L1 ve Elastic Net regularization tekniği sonucunda en iyi performansın L1 tekniğinde olduğu görülür. Ancak bu parametrelere ve benimsenen yaklaşım türlerine göre değişkenlik gösterir..!
+# L2, L1 ve Elastic Net regularization tekniği sonucunda bu veri seti için en iyi performansın L1 tekniğinde olduğu görülür. Ancak bu parametrelere ve benimsenen yaklaşım türlerine göre değişkenlik gösterir..!
 
 # endregion
