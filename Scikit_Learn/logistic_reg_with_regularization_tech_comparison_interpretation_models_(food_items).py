@@ -81,7 +81,7 @@ np.unique(y, return_counts=True)  # Bu ifade np.unique() kullanılarak dizideki 
 
 
 
-# region Logistic Regression modelini L2 ve L1 regularization teknikleriyle oluşturup karşılaştırma, metriclerine bakma ve yorumlama
+# region Logistic Regression modelini L2, L1 ve Elastic Net regularization teknikleriyle oluşturup karşılaştırma, metriclerine bakma ve yorumlama
 X_train, X_test, y_train, y_test = train_test_split(X,y,test_size=0.2, random_state=42, stratify=y) # stratify=y parametresi veri setindeki target column'da dengesizlik varsa kullanılır. Bu parametre sınıf dağılımını hem train hem de test veri setinde belirtilen oranda koruyarak sınıfların oranlarının korunmasını sağlar.
 
 print(f'Train shapes = {X_train.shape}, {y_train.shape}')
