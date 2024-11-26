@@ -71,7 +71,7 @@ print(f'X sütunun aralık kontorlü = {X.min(), X.max()}')
 # y sütunu kategorik 3 değere sahip olduğu için LabelEncoder() kullanıldı
 label_encoder = LabelEncoder()
 
-y = label_encoder.fit_transform(y)  # y sütununu oluştururken .values kullandığım için zaten numpy array formatındaydı. Ancak .values kullanılmasaydı o zaman tek boyutlu dizeye indirgenirdi.
+y = label_encoder.fit_transform(y)  # y sütununu oluştururken .values kullandığım için zaten numpy array formatındaydı. Ancak .values kullanılmasaydım o zaman tek boyutlu dizeye indirgenirdi.
 y                                   # örnek olarak -> y = label_encoder.fit_transform(y.values.ravel()) ile hem numpy formatına dönüştürülür hem de .ravel() ile çok boyutlu numpy arrayleri                                        (2D, 3D gibi) tek boyutlu şekilde düzleştirir..!
 
 # sınıflar -> 0=In Moderation, 1=Less Often, 2=More Often
@@ -93,7 +93,7 @@ logistic_reg_l2 = LogisticRegression(penalty='l2', max_iter=1000, solver='lbfgs'
 logistic_reg_l2.fit(X_train,y_train)
 l2_predict = logistic_reg_l2.predict(X_test)
 
-class_probability_distribution_l2 = logistic_reg_l2.predict_proba(X_test[:1, :])[0]  # predict_proba(X_test[:1, :])[0] ifadesi tüm sınıflarda bulunan olasılıkların  ilk satır ve sütunu alır..!
+class_probability_distribution_l2 = logistic_reg_l2.predict_proba(X_test[:1, :])[0]  # predict_proba(X_test[:1, :])[0] ifadesi tüm sınıflarda bulunan olasılıkların ilk satır ve sütunu alır..!
 class_probability_distribution_l2
 
 # Bütün metricleri görebileceğim bir fonksiyon oluşturdum.
@@ -106,7 +106,7 @@ def evaluate_metric(y_test, y_predict):
     results['F1-Score'] = f1_score
     return results
 
-evaluate_metric(y_test, l2_predict)  # Metirclerden anlaşılabileceği gibi class 2 sınıfına (Daha sık) ait değerler iyi değil. Bu bize dengesiz veri kümesinin olduğunun kanıtıdır.
+evaluate_metric(y_test, l2_predict)  # Metirclerden anlaşılabileceği gibi class 2 sınıfına (More Often) ait değerler iyi değil. Bu bize dengesiz veri kümesinin olduğunun kanıtıdır.
 
 cm_l2 = confusion_matrix(y_test, l2_predict, normalize='true')
 cm_l2
@@ -240,7 +240,7 @@ visualize_coefs(coef_dict)
 
 
 
-# Modeller hakkında yorum --->  Modeller karşılaştırıldığında L1 tekniği kullanılan logistic regression'un L2'den çok daha iyi performans verdiği görülür. Bunun sebei L1'in katsayıları sıfırlaması olabilir. Böylece feature selection yapılmış olup modeli etkilemeyen veya az etkileyen özelliklerin modelden çıkarılması sağlanır.
+# Modeller hakkında yorum --->  Modeller karşılaştırıldığında L1 tekniği kullanılan logistic regression'un L2'den çok daha iyi performans verdiği görülür. Bunun sebebi L1'in katsayıları sıfırlaması olabilir. Böylece feature selection yapılmış olup modeli etkilemeyen veya az etkileyen özelliklerin modelden çıkarılması sağlanmış olabilir.
 
 
 
@@ -277,7 +277,7 @@ def all_average_params(y_test, y_pred):
         print(f"F1-Score: {f1}")
         print(f'____________')
 
-all_average_params(y_test, elastic_net_predict)  # accuracy, precision, recall ve f1_score metricleri ile beraber çoklu sınıfların (multiclass) alabileceği average parametrelerine bakıp yorumladım..!
+all_average_params(y_test, elastic_net_predict)  # precision, recall ve f1_score metricleri ile beraber çoklu sınıfların (multiclass) alabileceği average parametrelerine bakıp yorumladım..!
 
 
 cm_elastic_net = confusion_matrix(y_test, elastic_net_predict, normalize='true')
