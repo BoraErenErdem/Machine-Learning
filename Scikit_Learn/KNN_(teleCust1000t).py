@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 from sklearn import preprocessing,metrics
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
 import seaborn as sns
 
 
@@ -534,4 +535,41 @@ plt.show()
 
 print(f'En iyi doğruluk değeri: {jsi_acc.max()}\n'
         f'Sırası: {jsi_acc.argmax() + 1}')
+# endregion
+
+
+
+# region featuresların custcat ile olan ilşkisini elbow method kullanarak ve error rate hesaplaması yaparak bul
+X = df.drop('custcat',axis=1).values
+print(X)
+
+y = df['custcat'].values
+print(y)
+
+X_train, X_test, y_train, y_test = train_test_split(X,y,test_size=0.2,random_state=42)
+
+standard_scaler = preprocessing.StandardScaler()
+X = standard_scaler.fit_transform(X)
+print(X)
+
+error_rates = []
+for k in range(1, 32):
+    knn = KNeighborsClassifier(n_neighbors=k)
+    knn.fit(X_train, y_train)
+    y_pre = knn.predict(X_test)
+    error_rates.append(1 - accuracy_score(y_test, y_pre))
+
+print(f'Error Rates = {error_rates}')
+
+plt.figure(figsize=(10,7))
+plt.plot(range(1, 32), error_rates, color='green')
+plt.legend(('error_rate, error_rate'), prop={'size': 8})
+plt.xlabel('Neighboors Number', color='r')
+plt.ylabel('Error Rate', color='r')
+plt.grid()
+plt.tight_layout()
+plt.show()
+
+print(f'En düşük error rate değeri = {min(error_rates)}')
+print(f'En düşük error rate değerine sahip K sayısı = {np.argmin(error_rates) + 1}')
 # endregion

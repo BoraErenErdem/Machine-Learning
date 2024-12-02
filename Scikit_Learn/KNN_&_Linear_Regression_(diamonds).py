@@ -19,6 +19,8 @@ print(df.head().to_string())
 
 sns.lineplot(df)
 
+df.dtypes.value_counts()
+
 # region Elmasların fiyatlarını tahmin eden lineer model kur
 
 df = pd.get_dummies(df,columns=['cut', 'color', 'clarity'], drop_first=True, dtype=int)  # drop_first=True ilk değeri düşür demek.  # dtype=int True ve False yerine 1 ve 0 yaz demek.
