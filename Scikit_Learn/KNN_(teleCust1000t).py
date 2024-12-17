@@ -563,7 +563,7 @@ print(f'Error Rates = {error_rates}')
 
 plt.figure(figsize=(10,7))
 plt.plot(range(1, 32), error_rates, color='green')
-plt.legend(('error_rate, error_rate'), prop={'size': 8})
+plt.legend(('error_rate'), prop={'size': 8})
 plt.xlabel('Neighboors Number', color='r')
 plt.ylabel('Error Rate', color='r')
 plt.grid()
