@@ -28,6 +28,7 @@ xx, yy = np.meshgrid(np.arange(x_min, x_max, 0.01), np.arange(y_min, y_max, 0.01
 # Burada amaç ızgara üzerindeki her noktayı model kullanarak tahmin etmek.
 Z = model.predict(np.c_[xx.ravel(), yy.ravel()])  # np.c_[xx.ravel(), yy.ravel()] -> Izgaradaki her bir noktayı, modelin tahmin edebilmesi için düz bir liste haline getirir.
 Z = Z.reshape(xx.shape)  # Z.reshape(xx.shape) -> Tahmin edilen sonuçları, orjinal ızgara boyutuna geri dönüştürür.
+# np.c_[xx.ravel(), yy.ravel()] ifadesiyle xx ve yy'yi sütunlar olarak birleştirip her noktanın X ve y koordinatları çiftler halinde bir matris oluşuturldu.
 
 
 # Karar sınırının (decision boundary) çizilmesi
