@@ -34,6 +34,7 @@ print(X)
 
 # Yukarıda oluşturduğumuz X features matrix'inde Sex, BP, Cholestrol gibi features'ların değerleri categorical yani sözel ifadeler olduğunu görebiliriz. Bu çalışmada karar ağacının algoritmasında entropy hesabı yapacağımız için yani aritmatiksel işlemler yapacağımız için bu categorical değerlerden faydalanmalıyız. İlgili features'leri scaler büyüklüklere dönüştüreceğiz.
 
+df['Sex'].value_counts()
 le_Sex = preprocessing.LabelEncoder().fit(['F','M'])  # LabelEncoder() 0 ve 1 verir. Buradaki fit() F ve M yani isimlerine 0 ve 1 gelecek olan isimleri belirtir.
 X[:,1] = le_Sex.transform(X[:,1])  # Burada Sex adlı sütunu aldık ve onu dönüştürmesini istedik (0 ve 1)
 print(X)
