@@ -400,8 +400,8 @@ X_train, X_test, y_train, y_test = train_test_split(X,y,test_size=0.2)
 
 random_forrest = RandomForestClassifier(n_estimators=100, criterion='gini', max_depth=6)  # n_estimators= Ağaç sayısını belirler. Daha fazla ağaç daha fazla çeşitlilik ve iyi sonuç demektir ancak daha fazla hesaplama maliyeti olur.
 # criterion= Ağaçların bölünme kriterini belirler. "gini" veya "entropy" olabilir.
-# max_depth= Her ağacın maksimum derinliğini sınırlar. Ağaçların derinleşmesini önler, bu da aşırı uydurmaya karşı koruma sağlayabilir.
-# n_jobs= Model eğitimi sırasında kullanılacak iş parçacığı sayısını belirler. Eğer -1 olarak ayarlanırsa, tüm işlemciler kullanılır.
+# max_depth= Her ağacın maksimum derinliğini sınırlar. Ağaçların derinleşmesini önler, bu da aşırı uydurmaya karşı koruma sağlayabilir. (Bir nevi early pruning yapılır)
+# n_jobs= Model eğitimi sırasında kullanılacak çekirdek sayısını belirler. Eğer -1 olarak ayarlanırsa, tüm işlemciler kullanılır.
 random_forrest.fit(X_train, y_train)
 y_prediction = random_forrest.predict(X_test)
 print(y_prediction)
